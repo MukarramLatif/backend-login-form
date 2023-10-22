@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Front End</title>
+  </head>
+  <body>
+    <h1>Signup Form</h1>
+    <form onsubmit="signup(); return false">
+      <label for="firstName">First Name</label>
+      <input type="text" name="firstName" id="firstName" required /><br /><br />
+      <label for="lastName">Last Name</label>
+      <input type="text" name="lastName" id="lastName" required /><br /><br />
+      <label for="userName">User Name</label>
+      <input type="text" name="userName" id="userName" required /><br /><br />
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required /><br /><br />
+      <label for="number">Mobile Number</label>
+      <input type="tel" name="number" id="number" required /><br /><br />
+      <label for="password">Password</label>
+      <input
+        type="password"
+        name="password"
+        id="password"
+        required
+        minlength="8"
+      /><br /><br />
+      <input type="submit" value="Signup" onclick="signup()" />
+    </form>
+    <p id="message"></p>
+    <br /><br />
+    <button onclick="getAllUsers()">Get all users</button>
+    <p id="allUserList"></p>
+    <script>
+      function signup() {
+        var firstName = document.getElementById("firstName").value;
+        var lastName = document.getElementById("lastName").value;
+        var number = document.getElementById("number").value;
+        var userName = document.getElementById("userName").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        axios
+          .post("http://localhost:2512/user", {
+            firstName: firstName,
+            lastName: lastName,
+            userName: userName,
+            number: number,
+            password: password,
+            email: email,
+          })
+          .then(function (response) {
+            console.log(response.data);
+            document.querySelector("#message").innerHTML =
+              response.data.message;
+          })
+          .catch(function (error) {
+            console.log(error.message);
+          });
+      }
+      function getAllUsers() {
+        axios.get("http://localhost:2512/users").then(function (response) {
+          console.log(response.data);
+          response.data.map((eachUser) => {
+            document.querySelector(
+              "#allUserList"
+            ).innerHTML += `<b>${eachUser.firstName} ${eachUser.lastName}</b> <br> ${eachUser.userName}<br> ${eachUser.number} <br>${eachUser.email} <br>${eachUser.password} <br><hr>`;
+          });
+        });
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </body>
+</html>
